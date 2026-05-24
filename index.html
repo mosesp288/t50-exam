@@ -930,59 +930,58 @@
     }
   ];
     
-let i = 0;
+questions.sort(() => Math.random() - 0.5);
 
-    // פונקציה לערבוב מערך (Fisher-Yates shuffle)
-    function shuffle(array) {
-        return array.sort(() => Math.random() - 0.5);
-    }
+    let i = 0;
+    let userAnswers = {}; // אובייקט לשמירת תשובות המשתמש
 
     function render() {
-        if (!questions[i]) return;
         const q = questions[i];
         document.getElementById('qText').innerText = (i + 1) + ". " + q.question;
-        
         const optionsDiv = document.getElementById('options');
+        const rationaleDiv = document.getElementById('rationale');
         optionsDiv.innerHTML = '';
-        
-        // יצירת עותק של התשובות וערבוב שלהן
-        let shuffledOptions = shuffle([...q.answerOptions]);
-        
-        shuffledOptions.forEach((a, index) => {
+        rationaleDiv.style.display = 'none';
+
+        // ערבוב אקראי של תשובות
+        let shuffled = [...q.answerOptions].sort(() => Math.random() - 0.5);
+
+        shuffled.forEach((a, index) => {
             const btn = document.createElement('div');
             btn.className = 'option';
-            // הוספת מספור לתשובות
             btn.innerText = (index + 1) + ". " + a.text;
-            btn.onclick = () => check(btn, a.isCorrect);
+            
+            // בדיקה אם המשתמש כבר ענה על שאלה זו
+            if (userAnswers[i] !== undefined) {
+                btn.style.pointerEvents = 'none';
+                if (a.text === userAnswers[i]) {
+                    btn.className += a.isCorrect ? ' correct' : ' incorrect';
+                }
+            }
+
+            btn.onclick = () => {
+                userAnswers[i] = a.text;
+                render(); // ריענון להצגת הסבר
+            };
             optionsDiv.appendChild(btn);
         });
 
-        document.getElementById('prevBtn').style.visibility = (i === 0) ? 'hidden' : 'visible';
-        document.getElementById('nextBtn').style.display = 'none';
-    }
-
-    function check(el, isC) {
-        document.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
-        el.className += isC ? ' correct' : ' incorrect';
-        document.getElementById('nextBtn').style.display = 'block';
-    }
-
-    function prevQ() {
-        if (i > 0) {
-            i--;
-            render();
+        // הצגת הסבר אם כבר ענה
+        if (userAnswers[i] !== undefined) {
+            let selected = q.answerOptions.find(a => a.text === userAnswers[i]);
+            rationaleDiv.innerText = "הסבר: " + selected.rationale;
+            rationaleDiv.style.display = 'block';
         }
+
+        document.getElementById('prevBtn').style.visibility = (i === 0) ? 'hidden' : 'visible';
     }
 
+    function prevQ() { if(i > 0) { i--; render(); } }
     function nextQ() { 
-        i++; 
-        if(i < questions.length) { 
-            render(); 
-        } else { 
-            document.querySelector('.container').innerHTML = "<h1>כל הכבוד! סיימת את המבחן.</h1>"; 
-        } 
+        if(i < questions.length - 1) { i++; render(); } 
+        else { document.querySelector('.container').innerHTML = "<h1>המבחן הסתיים!</h1>"; }
     }
-    
+
     render();
 </script>
 </body>
