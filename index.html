@@ -10,19 +10,20 @@
         .option:hover { background: #e9ecef; }
         .correct { background: #d4edda !important; border-color: #28a745 !important; }
         .incorrect { background: #f8d7da !important; border-color: #dc3545 !important; }
+        .rationale { margin-top: 10px; padding: 10px; background: #e7f3ff; border-radius: 5px; font-size: 0.9em; display: none; }
         .nav-buttons { display: flex; gap: 10px; margin-top: 20px; }
-        button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; color: white; }
+        button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; color: white; background: #007bff; }
         #prevBtn { background: #6c757d; }
-        #nextBtn { background: #007bff; }
     </style>
 </head>
 <body>
 <div class="container">
     <h3 id="qText">טוען מבחן...</h3>
     <div id="options"></div>
+    <div id="rationale" class="rationale"></div>
     <div class="nav-buttons">
-        <button id="prevBtn" onclick="prevQ()">⬅️ שאלה קודמת</button>
-        <button id="nextBtn" onclick="nextQ()">השאלה הבאה ➡️</button>
+        <button id="prevBtn" onclick="prevQ()">⬅️ חזור</button>
+        <button id="nextBtn" onclick="nextQ()">הבא ➡️</button>
     </div>
 </div>
 <script>
