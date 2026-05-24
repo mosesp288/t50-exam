@@ -1,3 +1,46 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>מבחן Agras T-50</title>
+    <style>
+        body { font-family: sans-serif; background: #f4f7f6; padding: 20px; text-align: center; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
+        .option { display: block; width: 100%; margin: 10px 0; padding: 15px; border: 1px solid #ccc; border-radius: 5px; cursor: pointer; text-align: right; }
+        .option:hover { background: #f0f0f0; }
+        .correct { background: #d4edda; border-color: #28a745; }
+        .incorrect { background: #f8d7da; border-color: #dc3545; }
+        button { margin-top: 15px; padding: 10px 20px; cursor: pointer; display: none; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h3 id="qText">טוען מבחן...</h3>
+    <div id="options"></div>
+    <button id="nextBtn" onclick="nextQ()">השאלה הבאה</button>
+</div>
+<script>
+    const qs = [
+        {"q": "1. מהם הטפסים הנדרשים לטסט?", "a": [{"text": "הפנייה, תעודת זהות, רישום, כושר טיסה, סע\"מ וביטוח", "c": true}, {"text": "רק רישיון מטיס", "c": false}]},
+        {"q": "2. מהו משקל ההמראה המרבי למטעד נוזלי?", "a": [{"text": "92 ק\"ג", "c": true}, {"text": "103 ק\"ג", "c": false}]},
+        {"q": "3. מהי מהירות הטיסה המקסימלית (לא בזמן עבודה)?", "a": [{"text": "10 מטר/שניה", "c": true}, {"text": "15 מטר/שניה", "c": false}]}
+    ];
+    let idx = 0;
+    function render() {
+        let q = qs[idx];
+        document.getElementById('qText').innerText = q.q;
+        document.getElementById('options').innerHTML = q.a.map(opt => `<div class="option" onclick="check(this, ${opt.c})">${opt.text}</div>`).join('');
+    }
+    function check(el, isC) {
+        el.className += isC ? ' correct' : ' incorrect';
+        document.getElementById('nextBtn').style.display = 'inline-block';
+    }
+    function nextQ() { idx = (idx + 1) % qs.length; render(); document.getElementById('nextBtn').style.display = 'none'; }
+    render();
+</script>
+</body>
+</html>
+
 {
   "questions": [
     {
