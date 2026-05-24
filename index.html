@@ -2,27 +2,25 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מבחן הסמכה Agras T-50</title>
+    <title>מבחן T-50</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; padding: 40px 20px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .question-title { font-size: 1.25rem; font-weight: bold; margin-bottom: 20px; color: #2c3e50; }
-        .option { display: block; width: 100%; margin: 12px 0; padding: 18px; border: 2px solid #e1e8ed; border-radius: 10px; cursor: pointer; text-align: right; font-size: 1.1rem; transition: all 0.2s; background: #fff; }
-        .option:hover { background: #f0f4f8; border-color: #3498db; }
-        .correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; }
-        .incorrect { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
-        #nextBtn { display: none; width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        #nextBtn:hover { background: #2980b9; }
+        body { font-family: sans-serif; background: #f8f9fa; padding: 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .option { display: block; width: 100%; margin: 10px 0; padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; text-align: right; }
+        .option:hover { background: #e9ecef; }
+        .correct { background: #d4edda !important; border-color: #28a745 !important; }
+        .incorrect { background: #f8d7da !important; border-color: #dc3545 !important; }
+        #nextBtn { display: none; width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; margin-top: 15px; cursor: pointer; }
     </style>
 </head>
 <body>
 <div class="container">
-    <h3 id="qText">טוען את המבחן...</h3>
+    <h3 id="qText">טוען...</h3>
     <div id="options"></div>
     <button id="nextBtn" onclick="nextQ()">השאלה הבאה ⬅️</button>
 </div>
 <script>
-    const {
+    const
   "questions": [
     {
       "question": "מהם הטפסים הנדרשים בכדי לבצע את הטסט?",
