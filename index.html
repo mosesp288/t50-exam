@@ -4,23 +4,24 @@
     <meta charset="UTF-8">
     <title>מבחן הסמכה Agras T-50</title>
     <style>
-        body { font-family: sans-serif; background: #f8f9fa; padding: 20px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .option { display: block; width: 100%; margin: 10px 0; padding: 15px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer; text-align: right; }
-        .option:hover { background: #e9ecef; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; padding: 20px; }
+        .container { max-width: 650px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .q-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 20px; color: #2c3e50; }
+        .option { display: block; width: 100%; margin: 10px 0; padding: 18px; border: 2px solid #e1e8ed; border-radius: 10px; cursor: pointer; text-align: right; font-size: 1.1rem; transition: 0.2s; background: #fff; }
+        .option:hover { background: #f0f4f8; border-color: #3498db; }
         .correct { background: #d4edda !important; border-color: #28a745 !important; }
         .incorrect { background: #f8d7da !important; border-color: #dc3545 !important; }
-        #nextBtn { display: none; width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 8px; margin-top: 15px; cursor: pointer; }
+        #nextBtn { display: none; width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; margin-top: 20px; }
     </style>
 </head>
 <body>
 <div class="container">
-    <h3 id="qText">טוען מבחן...</h3>
+    <h3 id="qText" class="q-title">טוען מבחן...</h3>
     <div id="options"></div>
     <button id="nextBtn" onclick="nextQ()">השאלה הבאה ⬅️</button>
 </div>
 <script>
-    const "questions": [
+    const questions = [
     {
       "question": "מהם הטפסים הנדרשים בכדי לבצע את הטסט?",
       "answerOptions": [
