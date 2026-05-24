@@ -5,42 +5,139 @@
     <title>מבחן הסמכה Agras T-50</title>
     <style>
         body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; padding: 40px 20px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
-        .question-title { font-size: 1.25rem; font-weight: bold; margin-bottom: 20px; color: #2c3e50; }
-        .option { display: block; width: 100%; margin: 12px 0; padding: 18px; border: 2px solid #e1e8ed; border-radius: 10px; cursor: pointer; text-align: right; font-size: 1.1rem; transition: all 0.2s; background: #fff; }
+        .container { max-width: 650px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .q-title { font-size: 1.3rem; font-weight: bold; margin-bottom: 20px; color: #2c3e50; }
+        .option { display: block; width: 100%; margin: 10px 0; padding: 15px; border: 2px solid #e1e8ed; border-radius: 8px; cursor: pointer; text-align: right; background: #fff; transition: 0.2s; }
         .option:hover { background: #f0f4f8; border-color: #3498db; }
-        .correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; }
-        .incorrect { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
-        #nextBtn { display: none; width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
-        #nextBtn:hover { background: #2980b9; }
+        .correct { background: #d4edda !important; border-color: #28a745 !important; }
+        .incorrect { background: #f8d7da !important; border-color: #dc3545 !important; }
     </style>
 </head>
 <body>
 <div class="container">
-    <h3 id="qText">טוען את המבחן...</h3>
+    <h3 id="qText">טוען את כל 100 השאלות...</h3>
     <div id="options"></div>
-    <button id="nextBtn" onclick="nextQ()">השאלה הבאה ⬅️</button>
 </div>
 <script>
-    // כל 100 השאלות מובנות כאן
-    const qs = [
-        {"q": "1. מהם הטפסים הנדרשים לטסט?", "a": [{"text": "הפנייה, תעודה מזהה, רישום, כושר טיסה, סע\"מ וביטוח", "c": true}, {"text": "תעודת מטיס בלבד", "c": false}, {"text": "ספר יצרן", "c": false}, {"text": "אישור משטרה", "c": false}]},
-        {"q": "2. מהו משקל ההמראה המרבי למטעד נוזלי?", "a": [{"text": "92 ק\"ג", "c": true}, {"text": "103 ק\"ג", "c": false}, {"text": "52 ק\"ג", "c": false}, {"text": "40 ק\"ג", "c": false}]},
-        {"q": "3. מהי מהירות הטיסה המקסימלית (לא בזמן עבודה)?", "a": [{"text": "10 מטר/שניה", "c": true}, {"text": "15 מטר/שניה", "c": false}, {"text": "6 מטר/שניה", "c": false}, {"text": "4 מטר/שניה", "c": false}]}
-        // כאן ימשיכו כל השאלות שלך...
+    const questions = [
+        {"q": "1. מהם הטפסים הנדרשים בכדי שנבצע את הטסט?", "a": [{"text": "הפנייה, תעודה מזהה, רישום, כושר טיסה, סע\"מ וביטוח", "c": true}, {"text": "רק רישיון מטיס", "c": false}, {"text": "ספר יצרן בלבד", "c": false}, {"text": "תעודת יושר", "c": false}]},
+        {"q": "2. מהו משקל ההמראה המרבי למטעד נוזלי?", "a": [{"text": "92 ק\"ג", "c": true}, {"text": "103 ק\"ג", "c": false}, {"text": "52 ק\"ג", "c": false}, {"text": "39.9 ק\"ג", "c": false}]},
+        {"q": "3. מהי מהירות הטיסה המקסימלית (לא בזמן עבודה)?", "a": [{"text": "10 מטר/שניה", "c": true}, {"text": "15 מטר/שניה", "c": false}, {"text": "4 מטר/שניה", "c": false}, {"text": "6 מטר/שניה", "c": false}]},
+        {"q": "4. על פי הפמ\"ת, מהו הגובה המקסימלי להטסה בקשר עין?", "a": [{"text": "300 רגל (100 מטר)", "c": true}, {"text": "500 מטר", "c": false}, {"text": "1000 רגל", "c": false}, {"text": "גובה חופשי", "c": false}]},
+        {"q": "5. ממה מורכבת מערכת ה-IMU?", "a": [{"text": "ג'יירוסקופ, מד תאוצה ומעבד בקר טיסה", "c": true}, {"text": "מצלמות בלבד", "c": false}, {"text": "GPS ורדאר", "c": false}, {"text": "מנועים", "c": false}]},
+        {"q": "6. כיצד תדע שהרחפן עבר למצב ATTI?", "a": [{"text": "שורת מצב כתומה, רחפן נסחף", "c": true}, {"text": "חיווי ירוק יציב", "c": false}, {"text": "כיבוי מנועים", "c": false}, {"text": "עלייה לגובה", "c": false}]},
+        {"q": "7. מה קורה כשמנוע נכבה?", "a": [{"text": "נורית אדומה קבועה, נוהל חירום", "c": true}, {"text": "המשך טיסה רגיל", "c": false}, {"text": "חזרה הביתה", "c": false}, {"text": "נחיתה אוטומטית", "c": false}]},
+        {"q": "8. מהי שפת ההתקפה בפרופלור?", "a": [{"text": "החלק הקדמי שפוגש את הרוח", "c": true}, {"text": "החלק האחורי", "c": false}, {"text": "חיבור המנוע", "c": false}, {"text": "מרכז הלהב", "c": false}]},
+        {"q": "9. מה חובה לבצע לפני משימה?", "a": [{"text": "בדיקת מזג אוויר, נוטאמים, כלי ושטח", "c": true}, {"text": "רק הטענת סוללות", "c": false}, {"text": "תיאום משטרתי בלבד", "c": false}, {"text": "שטיפת הרחפן", "c": false}]},
+        {"q": "10. מה קורה בלחיצת RTH?", "a": [{"text": "טיפוס, חזרה לבית, סיבוב, נחיתה ל-3 מטר", "c": true}, {"text": "נחיתה מיידית", "c": false}, {"text": "עצירה", "c": false}, {"text": "טיסה חופשית", "c": false}]},
+        {"q": "11. RTH והרחפן מעל הגובה המוגדר?", "a": [{"text": "נשאר בגובהו וחוזר", "c": true}, {"text": "מנמיך", "c": false}, {"text": "עולה", "c": false}, {"text": "מבטל", "c": false}]},
+        {"q": "12. איבוד תקשורת ליותר מ-3 שניות?", "a": [{"text": "Failsafe (RTH/נחיתה)", "c": true}, {"text": "עובר ל-ATTI", "c": false}, {"text": "נופל", "c": false}, {"text": "ממשיך ישר", "c": false}]},
+        {"q": "13. ערפל ואין קשר עין?", "a": [{"text": "נוהל RTH", "c": true}, {"text": "המשך עבודה", "c": false}, {"text": "הנמכה", "c": false}, {"text": "כיבוי", "c": false}]},
+        {"q": "14. מגבלת מרחק קשר עין?", "a": [{"text": "500 מטר", "c": true}, {"text": "1000 מטר", "c": false}, {"text": "5 ק\"מ", "c": false}, {"text": "ללא הגבלה", "c": false}]},
+        {"q": "15. זיהוי מכשול?", "a": [{"text": "תלוי הגדרות (עקיפה/עצירה)", "c": true}, {"text": "תמיד עוצר", "c": false}, {"text": "תמיד עוקף", "c": false}, {"text": "מכבה מנועים", "c": false}]},
+        {"q": "16. תפקיד המצפן?", "a": [{"text": "זיהוי כיוון הצפון", "c": true}, {"text": "גובה", "c": false}, {"text": "מכשולים", "c": false}, {"text": "תקשורת", "c": false}]},
+        {"q": "17. תקשורת השלט?", "a": [{"text": "תדר רדיו (RF)", "c": true}, {"text": "בלוטות'", "c": false}, {"text": "סלולר", "c": false}, {"text": "Wi-Fi", "c": false}]},
+        {"q": "18. תדר 5.8 מול 2.4?", "a": [{"text": "5.8 קצר ואיכותי, 2.4 ארוך ומופרע", "c": true}, {"text": "5.8 ארוך", "c": false}, {"text": "אין הבדל", "c": false}, {"text": "2.4 למצלמה", "c": false}]},
+        {"q": "19. טיסה בגשם?", "a": [{"text": "רק טפטוף קל (IP54)", "c": true}, {"text": "אסור", "c": false}, {"text": "מותר בכל גשם", "c": false}, {"text": "חצי שעה בלבד", "c": false}]},
+        {"q": "20. נוריות מהבהבות בטיסה?", "a": [{"text": "חיווי פעולה תקין", "c": true}, {"text": "תקלה", "c": false}, {"text": "סוללה נמוכה", "c": false}, {"text": "רדאר", "c": false}]},
+        {"q": "21. כמה שלטים?", "a": [{"text": "1", "c": true}, {"text": "2", "c": false}, {"text": "3", "c": false}, {"text": "ללא הגבלה", "c": false}]},
+        {"q": "22. זמן ריחוף נוזל מלא?", "a": [{"text": "7 דקות", "c": true}, {"text": "16 דקות", "c": false}, {"text": "30 דקות", "c": false}, {"text": "5 דקות", "c": false}]},
+        {"q": "23. מערכות עקיפת מכשולים?", "a": [{"text": "שילוב מצלמות ורדאר", "c": true}, {"text": "GPS בלבד", "c": false}, {"text": "אינפרא אדום", "c": false}, {"text": "LiDAR", "c": false}]},
+        {"q": "24. גובה ומרחק?", "a": [{"text": "ברומטר ו-GPS", "c": true}, {"text": "מצלמות", "c": false}, {"text": "רדאר", "c": false}, {"text": "מצפן", "c": false}]},
+        {"q": "25. היתר מיוחד בסע\"מ?", "a": [{"text": "חריגה מהפמ\"ת", "c": true}, {"text": "אישור יצרן", "c": false}, {"text": "ביטוח", "c": false}, {"text": "אישור משטרה", "c": false}]},
+        {"q": "26. מהו נוטאם?", "a": [{"text": "הודעה תעופתית", "c": true}, {"text": "עדכון DJI", "c": false}, {"text": "אזעקה", "c": false}, {"text": "הוראת משטרה", "c": false}]},
+        {"q": "27. תיאום אווירי?", "a": [{"text": "מודיעין טיס/מגדל", "c": true}, {"text": "חברה", "c": false}, {"text": "עירייה", "c": false}, {"text": "משטרה", "c": false}]},
+        {"q": "28. LLR במפה?", "a": [{"text": "מוגבל (Restricted)", "c": true}, {"text": "מסוכן", "c": false}, {"text": "אסור", "c": false}, {"text": "מנחת", "c": false}]},
+        {"q": "29. מרחק הפרדה מכלי טיס?", "a": [{"text": "200 רגל אנכי, 250 מטר אופקי", "c": true}, {"text": "50 מטר", "c": false}, {"text": "100 מטר", "c": false}, {"text": "1 ק\"מ", "c": false}]},
+        {"q": "30. מרחק ממכשול?", "a": [{"text": "1:1", "c": true}, {"text": "2:1", "c": false}, {"text": "150 מטר", "c": false}, {"text": "ללא", "c": false}]},
+        {"q": "31. בדיקות בד\"ח?", "a": [{"text": "לפני, במהלך ואחרי", "c": true}, {"text": "רק לפני", "c": false}, {"text": "פעם בשנה", "c": false}, {"text": "לפי הצורך", "c": false}]},
+        {"q": "32. הפרש מתח תקין?", "a": [{"text": "0.03", "c": true}, {"text": "0.1", "c": false}, {"text": "0.5", "c": false}, {"text": "1.0", "c": false}]},
+        {"q": "33. תיאום טיסה באמצע השבוע?", "a": [{"text": "יום קודם עד 15:00", "c": true}, {"text": "שעתיים לפני", "c": false}, {"text": "14 יום מראש", "c": false}, {"text": "באותו יום", "c": false}]},
+        {"q": "34. טמפרטורת עבודה?", "a": [{"text": "0 עד 45", "c": true}, {"text": "מינוס 10 עד 50", "c": false}, {"text": "15 עד 30", "c": false}, {"text": "ללא", "c": false}]},
+        {"q": "35. ביטול חיישנים?", "a": [{"text": "כן, בנפרד או ב-ATTI", "c": true}, {"text": "לא", "c": false}, {"text": "רק במעבדה", "c": false}, {"text": "רק מצלמה", "c": false}]},
+        {"q": "36. ATTI + RTH?", "a": [{"text": "לא קורה כלום", "c": true}, {"text": "נחיתה", "c": false}, {"text": "עקיפה", "c": false}, {"text": "נפילה", "c": false}]},
+        {"q": "37. זרועות?", "a": [{"text": "קרבון פייבר", "c": true}, {"text": "פלסטיק", "c": false}, {"text": "אלומיניום", "c": false}, {"text": "טיטניום", "c": false}]},
+        {"q": "38. נוריות לילה?", "a": [{"text": "אסור לכבות", "c": true}, {"text": "מותר", "c": false}, {"text": "רק ביום", "c": false}, {"text": "לפי בחירה", "c": false}]},
+        {"q": "39. טיסת לילה?", "a": [{"text": "היתר סע\"מ + נוהל", "c": true}, {"text": "אסור", "c": false}, {"text": "חופשי", "c": false}, {"text": "רק תרמי", "c": false}]},
+        {"q": "40. ESC?", "a": [{"text": "בקר מהירות מנוע", "c": true}, {"text": "בלימה", "c": false}, {"text": "מד רוח", "c": false}, {"text": "הגבלת מהירות", "c": false}]},
+        {"q": "41. ג'יירו?", "a": [{"text": "זוויות הטיה", "c": true}, {"text": "גובה", "c": false}, {"text": "מהירות", "c": false}, {"text": "תאוצה", "c": false}]},
+        {"q": "42. סבסוב ימינה מנועים?", "a": [{"text": "טיפוס בגובה", "c": true}, {"text": "נחיתה", "c": false}, {"text": "שריפה", "c": false}, {"text": "יציב", "c": false}]},
+        {"q": "43. בועת סופ\"ש?", "a": [{"text": "טיסה ללא תיאום", "c": true}, {"text": "שמורה", "c": false}, {"text": "אימון צבאי", "c": false}, {"text": "עיר", "c": false}]},
+        {"q": "44. זמני בועת סופ\"ש?", "a": [{"text": "ו' 14:00 עד א' 05:00", "c": true}, {"text": "חמישי עד ראשון", "c": false}, {"text": "שבת", "c": false}, {"text": "16:00 יומי", "c": false}]},
+        {"q": "45. גובה בועת גוברין?", "a": [{"text": "עד 2000 רגל מעל הים", "c": true}, {"text": "עד 400 מטר", "c": false}, {"text": "עד 1000 רגל", "c": false}, {"text": "חופשי", "c": false}]},
+        {"q": "46. קו ירוק במפה?", "a": [{"text": "נתיב טיסה", "c": true}, {"text": "גבול", "c": false}, {"text": "שמורה", "c": false}, {"text": "אסור", "c": false}]},
+        {"q": "47. גובה קרקע בטסט?", "a": [{"text": "700 רגל", "c": true}, {"text": "0 רגל", "c": false}, {"text": "1500 רגל", "c": false}, {"text": "300 מטר", "c": false}]},
+        {"q": "48. חישוב הפרדה?", "a": [{"text": "כן", "c": true}, {"text": "לא", "c": false}, {"text": "רדאר", "c": false}, {"text": "רק 50 רגל", "c": false}]},
+        {"q": "49. סוללה סכנה?", "a": [{"text": "ליתיום דליק", "c": true}, {"text": "גז", "c": false}, {"text": "משקל", "c": false}, {"text": "קצר", "c": false}]},
+        {"q": "50. כמה תאים?", "a": [{"text": "14", "c": true}, {"text": "4", "c": false}, {"text": "12", "c": false}, {"text": "20", "c": false}]},
+        {"q": "51. קיבולת סוללה?", "a": [{"text": "30,000 mAH", "c": true}, {"text": "10,000", "c": false}, {"text": "50,000", "c": false}, {"text": "15,000", "c": false}]},
+        {"q": "52. רוחב נתיב?", "a": [{"text": "2 ק\"מ", "c": true}, {"text": "100 מטר", "c": false}, {"text": "5 ק\"מ", "c": false}, {"text": "500 מטר", "c": false}]},
+        {"q": "53. עננים?", "a": [{"text": "מודיעין טיס", "c": true}, {"text": "מבט", "c": false}, {"text": "חברת חשמל", "c": false}, {"text": "לא חשוב", "c": false}]},
+        {"q": "54. מנפיק נוטאם?", "a": [{"text": "רש\"ת", "c": true}, {"text": "חיל האוויר", "c": false}, {"text": "חברה", "c": false}, {"text": "משטרה", "c": false}]},
+        {"q": "55. גובה קרקע במפה?", "a": [{"text": "מקרא צבעים", "c": true}, {"text": "מרחק חוף", "c": false}, {"text": "נתיב", "c": false}, {"text": "אי אפשר", "c": false}]},
+        {"q": "56. GNSS?", "a": [{"text": "ניווט לווייני", "c": true}, {"text": "סריקה", "c": false}, {"text": "סלולר", "c": false}, {"text": "בקר", "c": false}]},
+        {"q": "57. ריסוס מסחרי?", "a": [{"text": "תעודת רסס + סע\"מ", "c": true}, {"text": "רישיון בלבד", "c": false}, {"text": "אזורי", "c": false}, {"text": "אישור יצרן", "c": false}]},
+        {"q": "58. בועה ירוקה?", "a": [{"text": "משותפת לכלים מאוישים", "c": true}, {"text": "אסורה", "c": false}, {"text": "כטב\"ם בלבד", "c": false}, {"text": "גבוהה", "c": false}]},
+        {"q": "59. תיאום מגדל?", "a": [{"text": "לא (אם ב-5 תנאים)", "c": true}, {"text": "כן", "c": false}, {"text": "לפי צורך", "c": false}, {"text": "מול חיל אוויר", "c": false}]},
+        {"q": "60. לוג בוק?", "a": [{"text": "ספר כלי", "c": true}, {"text": "יצרן", "c": false}, {"text": "אפליקציה", "c": false}, {"text": "שכר", "c": false}]},
+        {"q": "61. סגירת תקלה?", "a": [{"text": "טכנאי מוסמך", "c": true}, {"text": "כל מטיס", "c": false}, {"text": "מנהל", "c": false}, {"text": "מפקח", "c": false}]},
+        {"q": "62. הארכת טווח צופה?", "a": [{"text": "לא", "c": true}, {"text": "כן", "c": false}, {"text": "קשר", "c": false}, {"text": "חול", "c": false}]},
+        {"q": "63. כטר\"מ גובה ענן?", "a": [{"text": "מרחק מינימלי", "c": true}, {"text": "לילה", "c": false}, {"text": "מהירות", "c": false}, {"text": "גשם", "c": false}]},
+        {"q": "64. טלפונים תיאומים?", "a": [{"text": "פרק א' 07", "c": true}, {"text": "ב' 08", "c": false}, {"text": "חברת חשמל", "c": false}, {"text": "DJI", "c": false}]},
+        {"q": "65. סופ\"ש?", "a": [{"text": "ו' 14:00 עד א' 05:00", "c": true}, {"text": "חמישי", "c": false}, {"text": "שבת", "c": false}, {"text": "יומי", "c": false}]},
+        {"q": "66. תוכנית חריגה?", "a": [{"text": "יום קודם 15:00", "c": true}, {"text": "בוקר", "c": false}, {"text": "שבוע", "c": false}, {"text": "3 ימים", "c": false}]},
+        {"q": "67. פרק א' 12?", "a": [{"text": "מודיעין טיס", "c": true}, {"text": "בנייה", "c": false}, {"text": "רישוי", "c": false}, {"text": "רדיו", "c": false}]},
+        {"q": "68. מגבלת גבול?", "a": [{"text": "מרחקים מינימליים", "c": true}, {"text": "צילום", "c": false}, {"text": "יבוא", "c": false}, {"text": "ערים", "c": false}]},
+        {"q": "69. חריגה מאזור אסור?", "a": [{"text": "אישור רת\"א/חיל אוויר", "c": true}, {"text": "בלתי אפשרי", "c": false}, {"text": "משטרה", "c": false}, {"text": "קנס", "c": false}]},
+        {"q": "70. נתיב אמצע שבוע?", "a": [{"text": "צבאי ואזרחי", "c": true}, {"text": "אל-על", "c": false}, {"text": "רכב", "c": false}, {"text": "גבול", "c": false}]},
+        {"q": "71. רוחב נתיב?", "a": [{"text": "2 ק\"מ", "c": true}, {"text": "10 ק\"מ", "c": false}, {"text": "500 מ", "c": false}, {"text": "1 ק\"מ", "c": false}]},
+        {"q": "72. תחילת סופ\"ש?", "a": [{"text": "ו' 06:00", "c": true}, {"text": "חמישי", "c": false}, {"text": "שבת", "c": false}, {"text": "ו' 18:00", "c": false}]},
+        {"q": "73. רוחב נתיב ראייה?", "a": [{"text": "2 ק\"מ", "c": true}, {"text": "5 ק\"מ", "c": false}, {"text": "1 ק\"מ", "c": false}, {"text": "אין", "c": false}]},
+        {"q": "74. הפרדה מופחתת?", "a": [{"text": "200 רגל, 250 מטר", "c": true}, {"text": "100", "c": false}, {"text": "500", "c": false}, {"text": "אין", "c": false}]},
+        {"q": "75. פטור מתיאום?", "a": [{"text": "עמידה ב-5 תנאים", "c": true}, {"text": "רחפן שחור", "c": false}, {"text": "1 תנאי", "c": false}, {"text": "חובבים", "c": false}]},
+        {"q": "76. גובה מתחת לענן?", "a": [{"text": "500 רגל", "c": true}, {"text": "10 שניות", "c": false}, {"text": "50 רגל", "c": false}, {"text": "אופקי", "c": false}]},
+        {"q": "77. אזור מאוכלס?", "a": [{"text": "250 מטר מרחק", "c": true}, {"text": "צופר", "c": false}, {"text": "50 מטר", "c": false}, {"text": "אסור", "c": false}]},
+        {"q": "78. הפעלה בלילה?", "a": [{"text": "היתר + אמצעי זיהוי", "c": true}, {"text": "חשיכה", "c": false}, {"text": "רדאר", "c": false}, {"text": "אסור", "c": false}]},
+        {"q": "79. 5.8 מול 2.4?", "a": [{"text": "קצר וצפוף", "c": true}, {"text": "ארוך", "c": false}, {"text": "זהה", "c": false}, {"text": "יותר מופרע", "c": false}]},
+        {"q": "80. רדאר?", "a": [{"text": "Phased Array", "c": true}, {"text": "LiDAR", "c": false}, {"text": "Vision", "c": false}, {"text": "כללי", "c": false}]},
+        {"q": "81. IP 54 ראשונה?", "a": [{"text": "הגנת אבק", "c": true}, {"text": "צלילה", "c": false}, {"text": "הדף", "c": false}, {"text": "חום", "c": false}]},
+        {"q": "82. IP 54 שנייה?", "a": [{"text": "התזות מים", "c": true}, {"text": "סילון", "c": false}, {"text": "שנים", "c": false}, {"text": "כימיקלים", "c": false}]},
+        {"q": "83. סע\"מ חקלאי?", "a": [{"text": "נספח לסע\"מ חברה", "c": true}, {"text": "תעודה", "c": false}, {"text": "ביטוח", "c": false}, {"text": "אישור שבת", "c": false}]},
+        {"q": "84. תקלה קלה?", "a": [{"text": "החלפת פרופלור", "c": true}, {"text": "כבל", "c": false}, {"text": "מנוע", "c": false}, {"text": "לוח אם", "c": false}]},
+        {"q": "85. LLD?", "a": [{"text": "מסוכן", "c": true}, {"text": "יום", "c": false}, {"text": "זעיר", "c": false}, {"text": "הדברה", "c": false}]},
+        {"q": "86. LLP?", "a": [{"text": "אסור", "c": true}, {"text": "פתוח", "c": false}, {"text": "חניה", "c": false}, {"text": "משטרה", "c": false}]},
+        {"q": "87. ATZ?", "a": [{"text": "מנחת", "c": true}, {"text": "אימונים", "c": false}, {"text": "עליון", "c": false}, {"text": "אסור", "c": false}]},
+        {"q": "88. CTR?", "a": [{"text": "תחום פיקוח", "c": true}, {"text": "תיאום", "c": false}, {"text": "רדיוס", "c": false}, {"text": "נתיב", "c": false}]},
+        {"q": "89. גובה 3 מטר RTH?", "a": [{"text": "אישור נחיתה", "c": true}, {"text": "10 מטר", "c": false}, {"text": "1 מטר", "c": false}, {"text": "צניחה", "c": false}]},
+        {"q": "90. מהירות עבודה?", "a": [{"text": "4-6 מ/ש", "c": true}, {"text": "1-2", "c": false}, {"text": "10", "c": false}, {"text": "15", "c": false}]},
+        {"q": "91. עמידות רוח?", "a": [{"text": "6 מ/ש", "c": true}, {"text": "2", "c": false}, {"text": "15", "c": false}, {"text": "10", "c": false}]},
+        {"q": "92. משקל גוף?", "a": [{"text": "39.9", "c": true}, {"text": "12", "c": false}, {"text": "52", "c": false}, {"text": "92", "c": false}]},
+        {"q": "93. משקל מוצק?", "a": [{"text": "103", "c": true}, {"text": "92", "c": false}, {"text": "52", "c": false}, {"text": "150", "c": false}]},
+        {"q": "94. תקן IP?", "a": [{"text": "IEC 60529", "c": true}, {"text": "IEEE", "c": false}, {"text": "ISO", "c": false}, {"text": "ASTM", "c": false}]},
+        {"q": "95. תמונת רדאר?", "a": [{"text": "360 מעלות", "c": true}, {"text": "קו", "c": false}, {"text": "45", "c": false}, {"text": "קרקע", "c": false}]},
+        {"q": "96. טווח גילוי?", "a": [{"text": "1 עד 50 מטר", "c": true}, {"text": "10", "c": false}, {"text": "1 ק\"מ", "c": false}, {"text": "5", "c": false}]},
+        {"q": "97. גלילאו?", "a": [{"text": "אירופה", "c": true}, {"text": "ארה\"ב", "c": false}, {"text": "רוסיה", "c": false}, {"text": "סין", "c": false}]},
+        {"q": "98. GLONASS?", "a": [{"text": "רוסיה", "c": true}, {"text": "ארה\"ב", "c": false}, {"text": "ישראל", "c": false}, {"text": "יפן", "c": false}]},
+        {"q": "99. לוויני מיקום?", "a": [{"text": "4", "c": true}, {"text": "1", "c": false}, {"text": "2", "c": false}, {"text": "8", "c": false}]},
+        {"q": "100. היבהוב מהיר?", "a": [{"text": "התנעה", "c": true}, {"text": "סוללה", "c": false}, {"text": "תהפך", "c": false}, {"text": "מצלמה", "c": false}]}
     ];
     let idx = 0;
     function render() {
-        let q = qs[idx];
+        let q = questions[idx];
         document.getElementById('qText').innerText = q.q;
-        document.getElementById('options').innerHTML = q.a.map(opt => `<div class="option" onclick="check(this, ${opt.c})">${opt.text}</div>`).join('');
+        document.getElementById('options').innerHTML = q.a.map(a => 
+            `<div class="option" onclick="check(this, ${a.c})">${a.text}</div>`
+        ).join('');
     }
     function check(el, isC) {
-        document.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
         el.className += isC ? ' correct' : ' incorrect';
         document.getElementById('nextBtn').style.display = 'block';
     }
-    function nextQ() { idx = (idx + 1) % qs.length; render(); document.getElementById('nextBtn').style.display = 'none'; }
+    function nextQ() { 
+        idx++; 
+        if(idx < questions.length) { render(); document.getElementById('nextBtn').style.display = 'none'; }
+        else { document.body.innerHTML = "<h1>כל הכבוד! סיימת את המבחן.</h1><button onclick='location.reload()'>התחל מחדש</button>"; }
+    }
     render();
 </script>
 </body>
