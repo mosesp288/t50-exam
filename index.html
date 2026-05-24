@@ -919,13 +919,11 @@
         {"text": "הסוללה תכבה עוד שניה.", "rationale": "מצב זה יתריע בחיווי אחר ובשלט.", "isCorrect": false},
         {"text": "הרחפן עומד להתהפך.", "rationale": "אין חיווי כזה.", "isCorrect": false},
         {"text": "המצלמה מקליטה וידאו.", "rationale": "נוריות האזהרה הראשיות לא משמשות לחיווי מצלמה.", "isCorrect": false}
-      ]
-    }
-  ]
-];
+   ];
 
     let i = 0;
     function render() {
+        if (!questions[i]) return;
         let q = questions[i];
         document.getElementById('qText').innerText = q.question;
         document.getElementById('options').innerHTML = q.answerOptions.map(a => 
