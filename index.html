@@ -20,8 +20,8 @@
     <button id="nextBtn" onclick="nextQ()">השאלה הבאה ⬅️</button>
 </div>
 <script>
-    const questions = [
-    {
+   const questions = [
+        {
       "question": "מהם הטפסים הנדרשים בכדי לבצע את הטסט?",
       "answerOptions": [
         {"text": "הפנייה והערכה, תעודה מזהה, רישיון מפעיל אווירי, תעודות רישום, תעודת כושר טיסה, סע\"מ וביטוח צד ג'.", "rationale": "זו הרשימה המלאה של המסמכים הנדרשים על פי החומר.", "isCorrect": true},
@@ -920,8 +920,8 @@
         {"text": "הרחפן עומד להתהפך.", "rationale": "אין חיווי כזה.", "isCorrect": false},
         {"text": "המצלמה מקליטה וידאו.", "rationale": "נוריות האזהרה הראשיות לא משמשות לחיווי מצלמה.", "isCorrect": false}
    ];
-
-    let i = 0;
+    
+let i = 0;
     function render() {
         if (!questions[i]) return;
         let q = questions[i];
