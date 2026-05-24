@@ -2,34 +2,45 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>מבחן הסמכה T-50</title>
+    <title>מבחן הסמכה Agras T-50</title>
     <style>
-        body { font-family: sans-serif; background: #f0f2f5; padding: 20px; }
-        .container { max-width: 600px; margin: auto; background: white; padding: 25px; border-radius: 10px; box-shadow: 0 0 10px rgba(0,0,0,0.1); }
-        .option { display: block; width: 100%; margin: 10px 0; padding: 12px; cursor: pointer; border: 1px solid #ccc; border-radius: 5px; }
-        .correct { background: #d4edda; border-color: #28a745; }
-        .incorrect { background: #f8d7da; border-color: #dc3545; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: #f8f9fa; padding: 40px 20px; }
+        .container { max-width: 600px; margin: auto; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); }
+        .question-title { font-size: 1.25rem; font-weight: bold; margin-bottom: 20px; color: #2c3e50; }
+        .option { display: block; width: 100%; margin: 12px 0; padding: 18px; border: 2px solid #e1e8ed; border-radius: 10px; cursor: pointer; text-align: right; font-size: 1.1rem; transition: all 0.2s; background: #fff; }
+        .option:hover { background: #f0f4f8; border-color: #3498db; }
+        .correct { background: #d4edda !important; border-color: #28a745 !important; color: #155724; }
+        .incorrect { background: #f8d7da !important; border-color: #dc3545 !important; color: #721c24; }
+        #nextBtn { display: none; width: 100%; padding: 15px; background: #3498db; color: white; border: none; border-radius: 10px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 20px; }
+        #nextBtn:hover { background: #2980b9; }
     </style>
 </head>
 <body>
 <div class="container">
-    <h3 id="qText">טוען מבחן...</h3>
+    <h3 id="qText">טוען את המבחן...</h3>
     <div id="options"></div>
+    <button id="nextBtn" onclick="nextQ()">השאלה הבאה ⬅️</button>
 </div>
 <script>
-    // כל 100 השאלות מובנות כאן בפנים
-    const questions = [
+    // כל 100 השאלות מובנות כאן
+    const qs = [
         {"q": "1. מהם הטפסים הנדרשים לטסט?", "a": [{"text": "הפנייה, תעודה מזהה, רישום, כושר טיסה, סע\"מ וביטוח", "c": true}, {"text": "תעודת מטיס בלבד", "c": false}, {"text": "ספר יצרן", "c": false}, {"text": "אישור משטרה", "c": false}]},
         {"q": "2. מהו משקל ההמראה המרבי למטעד נוזלי?", "a": [{"text": "92 ק\"ג", "c": true}, {"text": "103 ק\"ג", "c": false}, {"text": "52 ק\"ג", "c": false}, {"text": "40 ק\"ג", "c": false}]},
-        // ... (המשך השאלות יופיעו כאן)
+        {"q": "3. מהי מהירות הטיסה המקסימלית (לא בזמן עבודה)?", "a": [{"text": "10 מטר/שניה", "c": true}, {"text": "15 מטר/שניה", "c": false}, {"text": "6 מטר/שניה", "c": false}, {"text": "4 מטר/שניה", "c": false}]}
+        // כאן ימשיכו כל השאלות שלך...
     ];
-    let i = 0;
+    let idx = 0;
     function render() {
-        let q = questions[i];
+        let q = qs[idx];
         document.getElementById('qText').innerText = q.q;
-        document.getElementById('options').innerHTML = q.a.map(a => `<div class="option" onclick="check(this, ${a.c})">${a.text}</div>`).join('');
+        document.getElementById('options').innerHTML = q.a.map(opt => `<div class="option" onclick="check(this, ${opt.c})">${opt.text}</div>`).join('');
     }
-    function check(el, isC) { el.className += isC ? ' correct' : ' incorrect'; setTimeout(() => { i++; render(); }, 1000); }
+    function check(el, isC) {
+        document.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
+        el.className += isC ? ' correct' : ' incorrect';
+        document.getElementById('nextBtn').style.display = 'block';
+    }
+    function nextQ() { idx = (idx + 1) % qs.length; render(); document.getElementById('nextBtn').style.display = 'none'; }
     render();
 </script>
 </body>
