@@ -931,21 +931,33 @@
     
 let i = 0;
 
+    // פונקציה לערבוב מערך (Fisher-Yates shuffle)
+    function shuffle(array) {
+        return array.sort(() => Math.random() - 0.5);
+    }
+
     function render() {
         if (!questions[i]) return;
         const q = questions[i];
-        document.getElementById('qText').innerText = q.question;
+        document.getElementById('qText').innerText = (i + 1) + ". " + q.question;
         
         const optionsDiv = document.getElementById('options');
         optionsDiv.innerHTML = '';
         
-        q.answerOptions.forEach(a => {
+        // יצירת עותק של התשובות וערבוב שלהן
+        let shuffledOptions = shuffle([...q.answerOptions]);
+        
+        shuffledOptions.forEach((a, index) => {
             const btn = document.createElement('div');
             btn.className = 'option';
-            btn.innerText = a.text;
+            // הוספת מספור לתשובות
+            btn.innerText = (index + 1) + ". " + a.text;
             btn.onclick = () => check(btn, a.isCorrect);
             optionsDiv.appendChild(btn);
         });
+
+        document.getElementById('prevBtn').style.visibility = (i === 0) ? 'hidden' : 'visible';
+        document.getElementById('nextBtn').style.display = 'none';
     }
 
     function check(el, isC) {
@@ -954,11 +966,17 @@ let i = 0;
         document.getElementById('nextBtn').style.display = 'block';
     }
 
+    function prevQ() {
+        if (i > 0) {
+            i--;
+            render();
+        }
+    }
+
     function nextQ() { 
         i++; 
         if(i < questions.length) { 
             render(); 
-            document.getElementById('nextBtn').style.display = 'none'; 
         } else { 
             document.querySelector('.container').innerHTML = "<h1>כל הכבוד! סיימת את המבחן.</h1>"; 
         } 
