@@ -923,30 +923,30 @@
       ]
     }
   ]
-         
-let idx = 0;
+];
+
+    let i = 0;
     function render() {
-        // שימוש בשם questions המדויק
-        let q = questions[idx];
-        document.getElementById('qText').innerText = q.q;
-        document.getElementById('options').innerHTML = q.a.map(a => 
-            `<div class="option" onclick="check(this, ${a.c})">${a.text}</div>`
+        let q = questions[i];
+        document.getElementById('qText').innerText = q.question;
+        document.getElementById('options').innerHTML = q.answerOptions.map(a => 
+            `<div class="option" onclick="check(this, ${a.isCorrect})">${a.text}</div>`
         ).join('');
     }
-    
+
     function check(el, isC) {
         document.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
         el.className += isC ? ' correct' : ' incorrect';
         document.getElementById('nextBtn').style.display = 'block';
     }
-    
+
     function nextQ() { 
-        idx++; 
-        if(idx < questions.length) { 
+        i++; 
+        if(i < questions.length) { 
             render(); 
             document.getElementById('nextBtn').style.display = 'none'; 
         } else { 
-            document.querySelector('.container').innerHTML = "<h1>כל הכבוד! סיימת את המבחן.</h1>"; 
+            document.querySelector('.container').innerHTML = "<h1>כל הכבוד! סיימת.</h1>"; 
         } 
     }
     render();
