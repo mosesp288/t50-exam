@@ -924,11 +924,14 @@
       ]
     }
   ]
-}let idx = 0;
+         
+let idx = 0;
     function render() {
         let q = qs[idx];
         document.getElementById('qText').innerText = q.q;
-        document.getElementById('options').innerHTML = q.a.map(a => `<div class="option" onclick="check(this, ${a.c})">${a.text}</div>`).join('');
+        document.getElementById('options').innerHTML = q.a.map(a => 
+            `<div class="option" onclick="check(this, ${a.c})">${a.text}</div>`
+        ).join('');
     }
     function check(el, isC) {
         document.querySelectorAll('.option').forEach(o => o.style.pointerEvents = 'none');
@@ -938,7 +941,7 @@
     function nextQ() { 
         idx++; 
         if(idx < qs.length) { render(); document.getElementById('nextBtn').style.display = 'none'; }
-        else { document.querySelector('.container').innerHTML = "<h1>כל הכבוד! סיימת את המבחן.</h1>"; }
+        else { document.querySelector('.container').innerHTML = "<h1>סיימת את המבחן!</h1>"; }
     }
     render();
 </script>
