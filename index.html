@@ -10,7 +10,7 @@
         .option:hover { background: #e9ecef; }
         .correct { background: #d4edda !important; border-color: #28a745 !important; }
         .incorrect { background: #f8d7da !important; border-color: #dc3545 !important; }
-        .rationale { margin-top: 10px; padding: 10px; background: #e7f3ff; border-radius: 5px; font-size: 0.9em; display: none; }
+        .rationale { margin-top: 15px; padding: 15px; background: #e7f3ff; border-radius: 8px; font-size: 1em; display: none; border-right: 5px solid #007bff; }
         .nav-buttons { display: flex; gap: 10px; margin-top: 20px; }
         button { flex: 1; padding: 12px; border: none; border-radius: 8px; cursor: pointer; color: white; background: #007bff; }
         #prevBtn { background: #6c757d; }
@@ -931,9 +931,12 @@
   ];
     
 questions.sort(() => Math.random() - 0.5);
+    
+    // יצירת מערך ששומר את סדר התשובות המעורבב לכל שאלה בנפרד
+    let shuffledOptionsMemory = questions.map(q => [...q.answerOptions].sort(() => Math.random() - 0.5));
 
     let i = 0;
-    let userAnswers = {}; // אובייקט לשמירת תשובות המשתמש
+    let userAnswers = {}; 
 
     function render() {
         const q = questions[i];
@@ -943,33 +946,31 @@ questions.sort(() => Math.random() - 0.5);
         optionsDiv.innerHTML = '';
         rationaleDiv.style.display = 'none';
 
-        // ערבוב אקראי של תשובות
-        let shuffled = [...q.answerOptions].sort(() => Math.random() - 0.5);
+        // שימוש בסדר הקבוע שערבבנו מראש עבור שאלה זו
+        let currentOptions = shuffledOptionsMemory[i];
 
-        shuffled.forEach((a, index) => {
+        currentOptions.forEach((a, index) => {
             const btn = document.createElement('div');
             btn.className = 'option';
             btn.innerText = (index + 1) + ". " + a.text;
             
-            // בדיקה אם המשתמש כבר ענה על שאלה זו
+            // אם כבר ענה, ננעל את הכפתורים
             if (userAnswers[i] !== undefined) {
                 btn.style.pointerEvents = 'none';
-                if (a.text === userAnswers[i]) {
+                if (a.text === userAnswers[i].text) {
                     btn.className += a.isCorrect ? ' correct' : ' incorrect';
                 }
             }
 
             btn.onclick = () => {
-                userAnswers[i] = a.text;
-                render(); // ריענון להצגת הסבר
+                userAnswers[i] = a; 
+                render(); 
             };
             optionsDiv.appendChild(btn);
         });
 
-        // הצגת הסבר אם כבר ענה
         if (userAnswers[i] !== undefined) {
-            let selected = q.answerOptions.find(a => a.text === userAnswers[i]);
-            rationaleDiv.innerText = "הסבר: " + selected.rationale;
+            rationaleDiv.innerText = "הסבר: " + userAnswers[i].rationale;
             rationaleDiv.style.display = 'block';
         }
 
@@ -979,9 +980,9 @@ questions.sort(() => Math.random() - 0.5);
     function prevQ() { if(i > 0) { i--; render(); } }
     function nextQ() { 
         if(i < questions.length - 1) { i++; render(); } 
-        else { document.querySelector('.container').innerHTML = "<h1>המבחן הסתיים!</h1>"; }
+        else { document.querySelector('.container').innerHTML = "<h1>כל הכבוד! סיימת את המבחן.</h1>"; }
     }
-
+    
     render();
 </script>
 </body>
