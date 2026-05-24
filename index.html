@@ -922,13 +922,22 @@
    ];
     
 let i = 0;
+
     function render() {
         if (!questions[i]) return;
-        let q = questions[i];
+        const q = questions[i];
         document.getElementById('qText').innerText = q.question;
-        document.getElementById('options').innerHTML = q.answerOptions.map(a => 
-            `<div class="option" onclick="check(this, ${a.isCorrect})">${a.text}</div>`
-        ).join('');
+        
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = '';
+        
+        q.answerOptions.forEach(a => {
+            const btn = document.createElement('div');
+            btn.className = 'option';
+            btn.innerText = a.text;
+            btn.onclick = () => check(btn, a.isCorrect);
+            optionsDiv.appendChild(btn);
+        });
     }
 
     function check(el, isC) {
@@ -943,9 +952,10 @@ let i = 0;
             render(); 
             document.getElementById('nextBtn').style.display = 'none'; 
         } else { 
-            document.querySelector('.container').innerHTML = "<h1>כל הכבוד! סיימת.</h1>"; 
+            document.querySelector('.container').innerHTML = "<h1>כל הכבוד! סיימת את המבחן.</h1>"; 
         } 
     }
+    
     render();
 </script>
 </body>
